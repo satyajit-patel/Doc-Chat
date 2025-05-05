@@ -40,7 +40,7 @@ export default function PDFChatApplication() {
       const formData = new FormData();
       formData.append("file", file);
       
-      const response = await fetch("/api/upload", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/upload`, {
         method: "POST",
         body: formData
       });
@@ -86,7 +86,7 @@ export default function PDFChatApplication() {
     
     try {
       // Send query to backend
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
