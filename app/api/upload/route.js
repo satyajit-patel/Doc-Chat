@@ -27,12 +27,6 @@ export async function POST(request) {
     // Save the file
     await writeFile(filePath, buffer);
 
-    // Create the public URL
-    const fileUrl = `/uploads/${file.name}`;
-
-    // console.log("Saved at:", filePath);
-    // console.log(fileUrl);
-
     const retriever = await RAG(file.name);
     const sessionId = uuidv4();
     set(sessionId, retriever);
