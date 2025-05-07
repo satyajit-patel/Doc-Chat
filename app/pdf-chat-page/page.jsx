@@ -40,13 +40,14 @@ export default function PDFChatApplication() {
       const formData = new FormData();
       formData.append("file", file);
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/upload`, {
+      const response = await fetch("/api/upload", {
         method: "POST",
         body: formData
       });
       
       if(!response.ok) {
-        throw new Error("Upload failed");
+        throw new Error("Upload------failed");
+        return;
       }
       
       const result = await response.json();
@@ -62,7 +63,7 @@ export default function PDFChatApplication() {
       }]);
       
     } catch (err) {
-      console.error("Error uploading file:", err);
+      console.error("Error---------uploading file:", err);
       setError("Failed to upload file. Please try again.");
     } finally {
       setIsLoading(false);
@@ -86,7 +87,7 @@ export default function PDFChatApplication() {
     
     try {
       // Send query to backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/chat`, {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

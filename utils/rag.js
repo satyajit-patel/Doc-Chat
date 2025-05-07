@@ -4,22 +4,48 @@
     Embedding model
     VectorDB
 */
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+// import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { ChatGroq } from "@langchain/groq";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import supabase from "@/supabase";
+import "@mendable/firecrawl-js";
+// import { FireCrawlLoader } from "@langchain/community/document_loaders/web/firecrawl";
+import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 
-export async function RAG(fileName) {
-    const filePath = "public/uploads/" + fileName;
-    // console.log("*************************************************************************");
-    // console.log(filePath);
+// export async function firecrawl(fileUrl) {
+//     const loader = new FireCrawlLoader({
+//         url: fileUrl,
+//         apiKey: process.env.FIRECRAWL_API_KEY, 
+//         mode: "scrape", // "scrape" for single urls or "crawl" for all accessible subpages
+//         params: {
+//           formats: ['markdown'],
+//         },
+//     });
+//     const docs = await loader.load();
+//     console.log(typeof(docs[0].pageContent));
+//     console.log(docs[0].pageContent);
+// }
 
-    const loader = new PDFLoader(filePath, {splitPages: false});
-    const docs = await loader.load();
-    console.log("step 1 done");
+export async function RAG(fileUrl) {
+    // const loader = new PDFLoader(fileUrl, {splitPages: false});
+    // const docs = await loader.load();
     // console.log(docs[0].pageContent);
+    // console.log("step 1 done");
+
+   
+    // Fetch the PDF file from the URL
+    const response = await fetch(fileUrl);
+    // Convert response to Blob
+    const pdfBlob = await response.blob();
+    // Create loader with the Blob
+    const loader = new WebPDFLoader(pdfBlob, { splitPages: false });
+    // Load documents
+    const docs = await loader.load();
+    console.log({ docs });
+    console.log("step 1 done");
 
     const textSplitter = new RecursiveCharacterTextSplitter({
         chunkSize: 1000,
@@ -50,8 +76,6 @@ export async function RAG(fileName) {
     return retriever;
 }
 
-// RAG("cpHandBook.pdf");
-
 export async function LLM(query, retriever) {
     const llm = new ChatGroq({
         model: "llama-3.3-70b-versatile",
@@ -72,4 +96,17 @@ export async function LLM(query, retriever) {
     const aiMsg = await llm.invoke(prompt);
     
     return aiMsg.content;
+}
+
+export async function supabaseUpload(file) {
+    const {error} = await supabase.storage.from('pdf-store').upload(file.name, file, {
+        upsert: true, // enables Overwriting
+    });
+    if(error) {
+        console.log("error uploading file", error.message);
+        return;
+    }
+    const {data} = await supabase.storage.from('pdf-store').getPublicUrl(file.name);
+    // console.log(data);
+    return data.publicUrl;
 }
