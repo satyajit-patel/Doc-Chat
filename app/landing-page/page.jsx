@@ -22,7 +22,7 @@ export default function AuroraBackgroundDemo() {
         </div>
         <div
           className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
-          Document Q&A
+          PDF Q&A: Upload a PDF and ask questions about it.
         </div>
         <Link href="/pdf-chat-page">
           <button

@@ -9,19 +9,13 @@ This tool allows users to upload a PDF and interactively ask questions about its
 - **Article:** Read my concise guide on basic RAG for PDF chat at [Hashnode](https://satyajit-gen-ai.hashnode.dev/basic-rag-for-pdf-chat-short-and-crisp)
 
 ## Tech Stack Used
-
-- **Frontend**
-  - Next.js (App Router, React)
-  - React Hooks (`useState`, `useRef`)
-  - Custom UI Components (e.g., File Upload)
-
-- **Backend / API**
   - Next.js API Routes
   - LangChain (for document loading, splitting, embeddings, and vector store)
   - Qdrant (Vector Database)
   - Google Generative AI Embeddings
   - Groq LLM (for conversational AI)
   - Supabase Storage (for PDF file uploads and public URLs)
+  - Clerk (Auth)
 
 ## Key Features
 
